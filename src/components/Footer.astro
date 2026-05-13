@@ -3,7 +3,6 @@ import Link from "./Link.astro";
 ---
 
 <footer class="footer">
-  <!-- Floating billeder -->
   <div
     class="absolute inset-0 pointer-events-none overflow-hidden"
     aria-hidden="true"
@@ -40,6 +39,7 @@ import Link from "./Link.astro";
       style="animation: floatDown 20s linear infinite -4s;"
     />
   </div>
+  <!-- Billeder slut -->
 
   <!-- Nav + logo wrapper - sidder i bunden via flex-end på footer -->
   <div
@@ -53,7 +53,7 @@ import Link from "./Link.astro";
       md:px-[var(--space-desk-sm)]
       md:pb-[var(--space-desk-xs)]"
   >
-    <!-- Nav links -->
+    <!-- Nav links (her er der spacing på 203, som ikke er en fast spacing!) -->
     <nav
       class="flex flex-col
         gap-[var(--space-mob-xs)]
@@ -90,20 +90,20 @@ import Link from "./Link.astro";
     flex-direction: column;
     justify-content: flex-end;
 
-    /* Mobil: 932px på iPhone 14 Pro Max, vokser ikke - mobil er fast størrelse */
+    /* her skal vi lige kigge på scaffolding */
     height: 932px;
     min-height: 932px;
   }
 
-  /* Desktop: Macbook Pro 14 = 846px viewport-højde i Chrome */
+  /* og her */
   @media (min-width: 768px) {
     .footer {
-      /* Sæt til 846px som baseline men voks med viewporten på større skærme som Macbook 16 */
       height: max(846px, 100svh);
       min-height: 846px;
     }
   }
 
+  /* evt. skal det her sættes i tailwindcss */
   @keyframes floatDown {
     0% {
       transform: translateY(-300px);

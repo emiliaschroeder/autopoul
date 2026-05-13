@@ -1,0 +1,101 @@
+---
+import Heading from "./Heading.astro";
+import Text from "./Text.astro";
+import Button from "./Button.astro";
+---
+
+<section
+  class="grid grid-cols-6 md:grid-cols-12
+    mb-[var(--space-mob-xxl)]
+    md:mb-[var(--space-desk-xl)]"
+>
+  <!-- NEWSLETTER + billeder her:-->
+  <!-- Mobil: fylder hele bredden - Desktop: fylder 7 kolonner -->
+  <div class="col-span-6 md:col-span-7 relative">
+    <!-- Billeder start -->
+    <div
+      class="grid grid-cols-5 md:grid-cols-2 md:h-full gap-y-[var(--space-mob-xs)] md:gap-y-0"
+    >
+      <!-- Enkelt stol -->
+      <img
+        src="/img/newsletter_chair.png"
+        alt="Stol"
+        class="col-start-1 col-span-4
+          md:col-start-1 md:col-span-1
+          w-2/3 md:w-full object-cover"
+      />
+
+      <!-- Stablede stole -->
+      <img
+        src="/img/newsletter_stack.png"
+        alt="Stabelstole"
+        class="col-span-4
+          md:col-span-1
+          w-full object-cover"
+      />
+    </div>
+    <!-- Billeder slut -->
+
+    <!-- NEWSLETTER tekst overlapper billederne -->
+    <div class="text-accent absolute top-0 left-[-20px] z-10 leading-none">
+      <Heading style="h1">NEWSLETTER</Heading>
+    </div>
+  </div>
+
+  <!-- Tekst og formular start-->
+  <div
+    class="col-span-6
+      md:col-span-4
+      md:col-start-9
+      flex flex-col justify-between
+      pt-[var(--space-mob-sm)]
+      md:pt-0"
+  >
+    <!-- ved ikke om jeg synes h4 måske fungerer bedre her? -->
+    <Heading style="h4">
+      Join the stack. Be the first to know when the chairs come out.
+    </Heading>
+    <Text teksttype="pLarge">
+      Join the stack. Be the first to know when the chairs come out.
+    </Text>
+
+    <div
+      class="flex flex-col
+        gap-[var(--space-mob-md)]
+        mt-[var(--space-mob-lg)]
+        md:mt-0"
+    >
+      <!-- Navn (alt det med none er for at fjerne standard browser stylingen)-->
+      <div class="flex flex-col gap-[var(--space-mob-xxs)]">
+        <div class="border-b border-black pb-1">
+          <input
+            type="text"
+            name="name"
+            placeholder="Name"
+            autocomplete="name"
+            class="w-full px-0 bg-transparent border-none appearance-noneoutline-none font-script text-xl placeholder:text-black"
+          />
+        </div>
+      </div>
+
+      <!-- Email (alt det med none er for at fjerne standard browser stylingen) -->
+      <div class="flex flex-col gap-[var(--space-mob-xxs)]">
+        <div class="border-b border-black pb-1">
+          <input
+            type="email"
+            name="email"
+            placeholder="Email"
+            autocomplete="email"
+            class="w-full px-0 bg-transparent border-none appearance-none outline-none font-script text-xl placeholder:text-black"
+          />
+        </div>
+      </div>
+    </div>
+    <!-- Tekst og formular slut-->
+
+    <!-- CTA Button her -->
+    <div class="mt-[var(--space-mob-lg)] md:mt-0">
+      <Button variant="cta">SIGN UP</Button>
+    </div>
+  </div>
+</section>
