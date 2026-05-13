@@ -1,24 +1,27 @@
 ---
 // Henter parametrene fra Astro.props
-const { href="#", target="_self", variant= "textlink", size = "default" } = Astro.props; 
- 
-//Definer den styling (Tailwind classes, der gør sig gældende for alle links
-const linkStyling = ""; 
- 
-//Definer den styling (Tailwind classes), der gør sig gældende for de forskellige varianter 
-const variantClasses = {
-"textlink": "underline text-blue-500", /* text-primary-500 */
-"primary": "inline-block border-2 px-16 py-4 border-black", /* border-primary-500 */
-"secondary": "inline-block border-2 px-16 py-4 border-blue-500" /* border-secondary-500 */
+const {
+  href = "#",
+  target = "_self",
+  variant = "cta",
+  color = "black",
+} = Astro.props;
+
+const colorClasses = {
+  primary: "text-primary",
+  black: "text-black",
+  accent: "text-accent",
 };
- 
-//Definer den styling (Tailwind classes), der gør sig gældende for de forskelligeog størrelser.
-const sizeClasses = {
-"default": "text-default", 
-"large": "text-4xl",
-"medium": "text-xl",
-"small": "text-large"
+
+const variantClasses = {
+  cta: "text-[40px] hover:text-[50px] font-sans uppercase underline md:text-[60px] hover:font-script md:hover:leading-[65px] md:hover:text-[80px]",
+  nav: "text-[14px] hover:text-[16px] font-sans uppercase md:text-[24px] hover:font-script md:hover:text-[27px] md:hover:leading-7",
 };
 ---
+
 <!--Sæt classes for den pågældende knap sammen ved hjælp af Astros class:list -->
-<a href={href} target={target} class:list={[linkStyling, variantClasses[variant], sizeClasses[size]]}><slot /></a>
+<a
+  href={href}
+  target={target}
+  class:list={[variantClasses[variant], colorClasses[color]]}><slot /></a
+>

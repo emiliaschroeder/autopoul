@@ -1,4 +1,4 @@
-@import 'tailwindcss';
+@import "tailwindcss";
 
 @plugin '@tailwindcss/typography';
 @plugin '@tailwindcss/forms';
@@ -6,45 +6,61 @@
 @import "tailwindcss-intersect";
 
 @font-face {
-  font-family: 'Honk';
-  src: url('/fonts/Honk-Regular-VariableFont_MORF,SHLN.ttf') format('truetype');
+  font-family: "Helvetica Neue Normal";
+  src: url("/fonts/HelveticaNeueRoman.otf") format("opentype");
+  font-style: normal;
+  font-display: swap;
+}
+@font-face {
+  font-family: "Manic 2 Alternates";
+  src: url("/fonts/MANIC-Alternates2.otf") format("opentype");
+  font-style: normal;
+  font-display: swap;
 }
 
 @font-face {
-  font-family: 'Quicksand';
-  src: url('/fonts/Quicksand-VariableFont_wght.ttf') format('truetype');
-}
-
-@font-face {
-  font-family: 'Domine';
-  src: url('/fonts/Domine-Regular.ttf') format('truetype');
+  font-family: "Manic 1 Alternates";
+  src: url("/fonts/MANIC-Alternates1.otf") format("opentype");
+  font-style: normal;
+  font-display: swap;
 }
 
 @theme {
   /* Her tilføjes theme variable // tokens */
 
   /*Farver */
-  --color-primary-400: #00E4F5;
-  --color-primary-500: #006269;
-  --color-primary-600: #006D75;
-  --color-secondary-400: #F5E400;
-  --color-secondary-500: #F5A600;
-  --color-secondary-600: #F57A00;
+  --color-primary: #f9f9f9;
+  --color-accent: #ff0000;
+  --color-black: #000000;
 
   /*Typografi */
-  --font-display: 'Honk', monospace;
-  --font-sans: 'Quicksand', sans-serif;
-  --font-serif: 'Domine', serif;
+  --font-display: "League Gothic", sans-serif;
+  --font-sans: "Helvetica Neue Normal", sans-serif;
+  --font-script: "Manic 2 Alternates", sans-serif;
+  --font-script-variation: "Manic 1 Alternates", sans-serif;
+
+  /* Desktop spacing tokens */
+  --space-desk-xs: 14px;
+  --space-desk-sm: 28px;
+  --space-desk-md: 36px;
+  --space-desk-lg: 48px;
+  --space-desk-xl: 80px;
+  --space-desk-xxl: 96px;
+
+  /* Mobile spacing tokens */
+  --space-mob-xxs: 2px;
+  --space-mob-sm: 8px;
+  --space-mob-md: 14px;
+  --space-mob-lg: 20px;
+  --space-mob-xl: 24px;
+  --space-mob-xxl: 56px;
 }
 
 @layer base {
-
 }
 
-@layer components{
-
+@layer components {
 }
 
-@layer utilities{
-  
+@layer utilities {
 }
