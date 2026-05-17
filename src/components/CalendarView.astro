@@ -1,6 +1,4 @@
 ---
-import Heading from "./Heading.astro";
-import Link from "./Link.astro";
 import "../styles/tailwind.css";
 import { months, events } from "../data/events.js";
 import EventCard from "./EventCard.astro";
@@ -9,7 +7,7 @@ import EventCard from "./EventCard.astro";
 <div class="w-full">
   <div
     id="month-switcher"
-    class="flex justify-between items-end mb-[var(--space-mob-sm)] overflow-hidden"
+    class="flex justify-between items-end mb-[var(--space-mob-sm)] mt-[var(--space-mob-sm)] overflow-hidden"
   >
     <!-- Forrige måned -->
     <span

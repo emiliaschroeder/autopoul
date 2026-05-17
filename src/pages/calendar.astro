@@ -9,7 +9,12 @@ import CalendarView from "../components/CalendarView.astro";
 
 <MainLayout title="Calendar">
   <main>
-    <Heading style="h1">Calendar</Heading>
+    <Heading
+      style="h1"
+      stylingclasses="leading-none mb-[var(--space-mob-sm)] mt-[var(--space-mob-lg)]"
+      >Calendar</Heading
+    >
+    <hr class="border-[var(--color-black)] -mx-[25px] md:-mx-[40px]" />
     <CalendarView />
   </main>
 </MainLayout>
