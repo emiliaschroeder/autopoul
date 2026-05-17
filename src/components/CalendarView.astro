@@ -2,38 +2,136 @@
 import Heading from "./Heading.astro";
 import Link from "./Link.astro";
 import "../styles/tailwind.css";
+import { months, events } from "../data/events.js";
+import EventCard from "./EventCard.astro";
 ---
 
-<div class="grid grid-cols-2 gap-[var(--space-mob-xs)] w-full">
-  <div class="w-full aspect-[181/298] border border-[var(--color-black)]"></div>
-  <div class="w-full aspect-[181/298] border border-[var(--color-black)]"></div>
-  <div class="w-full aspect-[181/298] border border-[var(--color-black)]"></div>
-  <div class="w-full aspect-[181/298] border border-[var(--color-black)]"></div>
-  <div class="w-full aspect-[181/298] border border-[var(--color-black)]"></div>
-  <div class="w-full aspect-[181/298] border border-[var(--color-black)]"></div>
-  <div class="w-full aspect-[181/298] border border-[var(--color-black)]"></div>
-  <div class="w-full aspect-[181/298] border border-[var(--color-black)]"></div>
-  <div class="w-full aspect-[181/298] border border-[var(--color-black)]"></div>
-  <div class="w-full aspect-[181/298] border border-[var(--color-black)]"></div>
-  <div class="w-full aspect-[181/298] border border-[var(--color-black)]"></div>
-  <div class="w-full aspect-[181/298] border border-[var(--color-black)]"></div>
-  <div class="w-full aspect-[181/298] border border-[var(--color-black)]"></div>
-  <div class="w-full aspect-[181/298] border border-[var(--color-black)]"></div>
-  <div class="w-full aspect-[181/298] border border-[var(--color-black)]"></div>
-  <div class="w-full aspect-[181/298] border border-[var(--color-black)]"></div>
-  <div class="w-full aspect-[181/298] border border-[var(--color-black)]"></div>
-  <div class="w-full aspect-[181/298] border border-[var(--color-black)]"></div>
-  <div class="w-full aspect-[181/298] border border-[var(--color-black)]"></div>
-  <div class="w-full aspect-[181/298] border border-[var(--color-black)]"></div>
-  <div class="w-full aspect-[181/298] border border-[var(--color-black)]"></div>
-  <div class="w-full aspect-[181/298] border border-[var(--color-black)]"></div>
-  <div class="w-full aspect-[181/298] border border-[var(--color-black)]"></div>
-  <div class="w-full aspect-[181/298] border border-[var(--color-black)]"></div>
-  <div class="w-full aspect-[181/298] border border-[var(--color-black)]"></div>
-  <div class="w-full aspect-[181/298] border border-[var(--color-black)]"></div>
-  <div class="w-full aspect-[181/298] border border-[var(--color-black)]"></div>
-  <div class="w-full aspect-[181/298] border border-[var(--color-black)]"></div>
-  <div class="w-full aspect-[181/298] border border-[var(--color-black)]"></div>
-  <div class="w-full aspect-[181/298] border border-[var(--color-black)]"></div>
-  <div class="w-full aspect-[181/298] border border-[var(--color-black)]"></div>
+<div class="w-full">
+  <div
+    id="month-switcher"
+    class="flex justify-between items-end mb-[var(--space-mob-sm)] overflow-hidden"
+  >
+    <!-- Forrige måned -->
+    <span
+      id="prev-month"
+      class="font-sans text-[20px] text-[var(--color-accent)] underline cursor-pointer w-1/3"
+    ></span>
+
+    <!-- Aktiv måned -->
+    <span
+      id="current-month"
+      class="font-sans text-[30px] text-[var(--color-black)] w-1/3 text-center"
+      >MAJ</span
+    >
+
+    <!-- Næste måned -->
+    <span
+      id="next-month"
+      class="font-sans text-[20px] text-[var(--color-accent)] underline cursor-pointer w-1/3 text-right"
+      >JUNI</span
+    >
+  </div>
+
+  <div
+    id="calendar-grid"
+    class="grid grid-cols-2 gap-[var(--space-mob-xs)] w-full transition-opacity duration-300"
+  >
+  </div>
 </div>
+
+<script>
+  // Vi importerer dataen i scriptet også
+  import { months, events } from "../data/events.js";
+
+  // Vi starter på maj som er index 0 i months arrayet
+  let currentIndex = 0;
+
+  // Vi finder vores HTML elementer
+  const prevMonthEl = document.getElementById("prev-month");
+  const currentMonthEl = document.getElementById("current-month");
+  const nextMonthEl = document.getElementById("next-month");
+  const gridEl = document.getElementById("calendar-grid");
+
+  // Denne funktion opdaterer månedsskifteren med de rigtige måneder
+  function updateMonthSwitcher() {
+    // Forrige måned - hvis vi er på maj vises ingenting
+    prevMonthEl.textContent =
+      currentIndex > 0 ? months[currentIndex - 1].label : "";
+
+    // Aktiv måned
+    currentMonthEl.textContent = months[currentIndex].label;
+
+    // Næste måned - hvis vi er på oktober vises ingenting
+    nextMonthEl.textContent =
+      currentIndex < months.length - 1 ? months[currentIndex + 1].label : "";
+  }
+
+  // Denne funktion bygger gridet op med de rigtige events for den valgte måned
+  function updateGrid() {
+    // Vi finder events for den aktive måned
+    const monthId = months[currentIndex].id;
+    const monthEvents = events[monthId];
+
+    // Vi laver en liste over hvilke felter der har events
+    // reduce laver et objekt hvor nøglen er slot-nummeret
+    const eventsBySlot = monthEvents.reduce((acc, event) => {
+      acc[event.slot] = event;
+      return acc;
+    }, {});
+
+    // Vi bygger 31 felter op
+    let html = "";
+    for (let i = 1; i <= 31; i++) {
+      if (eventsBySlot[i]) {
+        // Dette felt har et event
+        const event = eventsBySlot[i];
+        html += `
+  
+  <a href="#" class="relative w-full aspect-[181/298] overflow-hidden block">
+    <img src="${event.img}" alt="${event.title}" class="absolute inset-0 w-full h-full object-cover" />
+    <div class="absolute inset-0 bg-black/40"></div>
+    <div class="absolute inset-[9px] flex flex-col justify-between">
+      <div class="flex justify-between">
+        <span class="text-white text-[24px] font-display uppercase [font-variation-settings:'wdth'_79]">${event.date}</span>
+        <span class="text-white text-[24px] font-display uppercase [font-variation-settings:'wdth'_79]">${event.time}</span>
+      </div>
+      <h3 class="text-white text-[60px] font-display uppercase leading-tight [font-variation-settings:'wdth'_75]">${event.title}</h3>
+    </div>
+  </a>
+`;
+      } else {
+        // Dette felt er tomt
+        html += `<div class="w-full aspect-[181/298] border border-[#000000]"></div>`;
+      }
+    }
+    gridEl.innerHTML = html;
+  }
+
+  // Denne funktion håndterer selve månedsskiftet med animation
+  function changeMonth(direction) {
+    // direction er enten 1 (frem) eller -1 (tilbage)
+    const newIndex = currentIndex + direction;
+
+    // Vi tjekker at vi ikke går uden for vores måneder
+    if (newIndex < 0 || newIndex >= months.length) return;
+
+    // Vi fader gridet ud
+    gridEl.style.opacity = "0";
+
+    // Efter 300ms skifter vi måned og fader ind igen
+    setTimeout(() => {
+      currentIndex = newIndex;
+      updateMonthSwitcher();
+      updateGrid();
+      gridEl.style.opacity = "1";
+    }, 300);
+  }
+
+  // Vi lytter efter klik på næste og forrige måned
+  nextMonthEl.addEventListener("click", () => changeMonth(1));
+  prevMonthEl.addEventListener("click", () => changeMonth(-1));
+
+  // Vi starter med at vise maj
+  updateMonthSwitcher();
+  updateGrid();
+</script>

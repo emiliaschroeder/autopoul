@@ -1,0 +1,48 @@
+---
+// EventCard.astro
+// Vi modtager disse værdier udefra når komponenten bruges
+const { date, time, title, img } = Astro.props;
+import "../styles/tailwind.css";
+import Heading from "./Heading.astro";
+---
+
+<!-- 
+  Den ydre wrapper er et link der fører til event-siden
+  block - gør linket til et blok-element så det fylder hele feltet
+-->
+<a href="#" class="relative w-full aspect-[181/298] overflow-hidden block">
+  <!-- Baggrundsbillede -->
+  <!-- 
+    absolute inset-0 - placerer billedet så det dækker hele den relative wrapper
+    w-full h-full - bredde og højde fylder 100%
+    object-cover - billedet beskæres så det fylder uden at blive strakt
+  -->
+  <img
+    src={img}
+    alt={title}
+    class="absolute inset-0 w-full h-full object-cover"
+  />
+
+  <!-- Mørkt overlay indtil rigtige billeder -->
+  <div class="absolute inset-0 bg-black/40"></div>
+
+  <!-- Indhold -->
+  <!-- 
+    Tekstindholdet ligger også absolut oven på billedet
+    absolute inset-[9px] - placerer sig 9px fra alle kanter som i Figma
+    flex flex-col - stappler indhold vertikalt
+    justify-between - skubber dato/tid til toppen og titel til bunden
+  -->
+  <div class="absolute inset-[9px] flex flex-col justify-between">
+    <!-- Top række med dato og tid -->
+    <div class="flex justify-between">
+      <Heading style="cardSmall" stylingclasses="text-white">{date}</Heading>
+      <Heading style="cardSmall" stylingclasses="text-white">{time}</Heading>
+    </div>
+
+    <!-- Titel nederst -->
+    <Heading style="cardLarge" stylingclasses="text-white leading-tight">
+      {title}
+    </Heading>
+  </div>
+</a>
