@@ -1,20 +1,20 @@
 ---
 import MainLayout from "../layouts/MainLayout.astro";
 import Heading from "../components/Heading.astro";
-import Text from "../components/Text.astro";
-import Footer from "../components/Footer.astro";
-import Header from "../components/Header.astro";
 import CalendarView from "../components/CalendarView.astro";
+import "../styles/tailwind.css";
 ---
 
 <MainLayout title="Calendar">
   <main>
     <Heading
       style="h1"
-      stylingclasses="leading-none mb-[var(--space-mob-sm)] mt-[var(--space-mob-lg)]"
+      stylingclasses="leading-none mb-[var(--space-mob-sm)] mt-[var(--space-mob-lg)] md:mt-[var(--space-desk-xl)] md:mb-[var(--space-desk-sm)]"
       >Calendar</Heading
     >
     <hr class="border-[var(--color-black)] -mx-[25px] md:-mx-[40px]" />
-    <CalendarView />
+    <div class="mb-[var(--space-mob-xxl)] md:mb-[var(--space-desk-xxl)]">
+      <CalendarView />
+    </div>
   </main>
 </MainLayout>
