@@ -1,0 +1,232 @@
+---
+import "../styles/tailwind.css";
+---
+
+<!-- 
+  ═══════════════════════════════════════════
+  CALENDARVIEW KOMPONENTEN
+  Indeholder månedsskifter og kalender grid.
+  Månedsskifteren animerer med slide når man skifter måned.
+  Kalender gridet fader ud og ind med nye events når måneden skifter.
+  Data importeres fra src/data/events.js
+  
+  OBS: Astro-komponenter som Heading og Link kan ikke bruges i de dele
+  af komponenten der styres af JavaScript, fordi JavaScript manipulerer
+  DOM-elementerne direkte ved månedsskift. Astro-komponenter renderes
+  udelukkende server-side og kan ikke opdateres dynamisk i browseren.
+  Tokens bruges derfor direkte som CSS custom properties i stedet.
+  ═══════════════════════════════════════════
+--><!-- START: Hoved-wrapper
+  Indeholder både månedsskifter og kalender grid
+  w-full sikrer at den fylder hele containerens bredde
+-->
+<div class="w-full">
+  <!-- START: Månedsskifter
+    Viser forrige, aktiv og næste måned ved siden af hinanden.
+    flex justify-between fordeler de tre måneder ud til hver side
+    items-end aligner alle tre måneder ved bundlinjen som i Figma
+    overflow-hidden sikrer at måneder der animerer ikke er synlige uden for containeren
+  -->
+  <div
+    id="month-switcher"
+    class="flex justify-between items-end mb-[var(--space-mob-sm)] md:mb-[var(--space-desk-md)] md:mt-[var(--space-desk-md)] mt-[var(--space-mob-sm)] overflow-hidden"
+  >
+    <!-- START:Forrige måned 
+     Starter tom - JavaScript sætter teksten via updateMonthSwitcher()
+     id så js kan finde detet element i DOM senere - document.getElementById("prev-month") bruges til at hente -->
+    <span
+      id="prev-month"
+      class="font-sans text-[16px] md:text-[30px] text-[var(--color-accent)] underline cursor-pointer w-1/3"
+    ></span>
+    <!-- SLUT: Forrige måned -->
+
+    <!-- START: Aktiv måned-->
+    <span
+      id="current-month"
+      class="font-sans text-[20px] md:text-[60px] text-[var(--color-black)] w-1/3 text-center"
+      >MAJ</span
+    >
+    <!-- SLUT: Aktiv måned-->
+
+    <!-- START: Næste måned-->
+    <span
+      id="next-month"
+      class="font-sans text-[16px] md:text-[30px] text-[var(--color-accent)] underline cursor-pointer w-1/3 text-right"
+      >JUNI</span
+    >
+    <!-- SLUT: Næste måned-->
+  </div>
+  <!-- SLUT: Månedsskifter -->
+
+  <!-- START: Kalender grid
+    Starter tomt - JavaScript bygger indholdet dynamisk via updateGrid()
+    transition-opacity duration-300 giver fade-animationen når måneden skifter
+  -->
+  <div
+    id="calendar-grid"
+    class="grid grid-cols-2 gap-[var(--space-mob-xs)] w-full transition-opacity duration-300 md:grid-cols-7 md:gap-[var(--space-desk-sm)]"
+  >
+  </div>
+  <!-- SLUT: Kalender grid -->
+</div>
+<!-- SLUT: Hoved-wrapper -->
+
+<script>
+  // Importerer måneder og events fra vores statiske data-fil
+  import { months, events } from "../data/events.js";
+
+  // currentIndex holder styr på hvilken måned der er aktiv
+  // 0 = maj, 1 = juni, 2 = juli osv - matcher rækkefølgen i months-arrayet
+  let currentIndex = 0;
+
+  // Vi finder de HTML-elementer som JavaScript skal manipulere
+  // getElementById returnerer det element der har det givne id
+  const prevMonthEl = document.getElementById("prev-month");
+  const currentMonthEl = document.getElementById("current-month");
+  const nextMonthEl = document.getElementById("next-month");
+  const gridEl = document.getElementById("calendar-grid");
+
+  // ─────────────────────────────────────────────
+  // FUNKTION: updateMonthSwitcher
+  // Opdaterer teksten i månedsskifteren baseret på currentIndex
+  // Kaldes hver gang brugeren skifter måned
+  // ─────────────────────────────────────────────
+  function updateMonthSwitcher() {
+    // Forrige måned - vises tom hvis vi er på den første måned (maj)
+    // Den ternære operator tjekker (if/else): er currentIndex større end 0?
+    // betingelse ? hvad-hvis-sand : hvad-hvis-falsk
+    // Ja → vis måneden før / Nej → vis ingenting
+    prevMonthEl.textContent =
+      currentIndex > 0 ? months[currentIndex - 1].label : "";
+
+    // Aktiv måned hentes direkte fra months-arrayet via currentIndex
+    currentMonthEl.textContent = months[currentIndex].label;
+
+    // Næste måned - vises tom hvis vi er på den sidste måned (oktober)
+    // Tjekker om currentIndex er mindre end det totale antal måneder minus 1 (tæller fra 0-5 fordi arrays altid starter ved index 0 i js)
+    nextMonthEl.textContent =
+      currentIndex < months.length - 1 ? months[currentIndex + 1].label : "";
+  }
+
+  // ─────────────────────────────────────────────
+  // FUNKTION: updateGrid
+  // Bygger kalender gridet op med de rigtige events for den aktive måned
+  // Kaldes ved start og hver gang brugeren skifter måned
+  // ─────────────────────────────────────────────
+  function updateGrid() {
+    // Finder id for den aktive måned fx "maj"
+    const monthId = months[currentIndex].id;
+    // Henter alle events for den aktive måned fra vores data-fil
+    const monthEvents = events[monthId];
+
+    // reduce() omdanner events-arrayet til et objekt hvor nøglen er slot-nummeret
+    // Det gør det nemt at slå op om et bestemt felt har et event
+    // Eksempel: { 2: {slot: 2, date: "02.05.2026", ...}, 6: {...} }
+    const eventsBySlot = monthEvents.reduce((acc, event) => {
+      acc[event.slot] = event;
+      return acc;
+    }, {});
+
+    // Vi bygger HTML-strengen op felt for felt
+    // HTML'en ændre sig hver gang man skifter måned - og det kan man ikke gøre med statisk HTML
+    // Alle 31 felter gennemgås - felter med events får et event-card
+    // felter uden events får et tomt felt med border
+    let html = "";
+    for (let i = 1; i <= 31; i++) {
+      if (eventsBySlot[i]) {
+        // ── EVENT CARD ──
+        // Dette felt har et event - vi bygger et klikbart kort
+        //Backticks ` bruges fordi de tillader at man sætter JavaScript-variabler direkte ind i teksten med ${} - fx ${event.title}.
+        const event = eventsBySlot[i];
+        html += `
+ 
+        <!--Event card
+    group gør at børne-elementer kan reagere på hover via group-hover (tailwinds måde at forældre kontrollere styling på børn)-->
+  <a href="#" class="relative w-full aspect-[181/298] overflow-hidden block group">
+
+    <!-- Baggrundsbillede der fylder hele kortet -->
+    <img src="${event.img}" alt="${event.title}" class="absolute inset-0 w-full h-full object-cover" />
+
+    <!-- Mørkt overlay der gør teksten læsbar på billedet -->
+    <div class="absolute inset-0 bg-black/20 transition-colors"></div>
+
+    <!-- Tekstindholdet ligger også absolut oven på billedet -->
+    <div class="absolute inset-[9px] flex flex-col justify-between">
+      
+      <!-- Dato øverst til venstre og tid øverst til højre -->
+        <div class="flex justify-between">
+        <span class="text-white md:group-hover:text-[var(--color-accent)] transition-colors text-[24px] md:text-[30px] font-display uppercase [font-variation-settings:'wdth'_79]">${event.date}</span>
+        <span class="text-white md:group-hover:text-[var(--color-accent)] transition-colors text-[24px] md:text-[30px] font-display uppercase [font-variation-settings:'wdth'_79]">${event.time}</span>
+      </div>
+      
+      <!-- Titel nederst -->
+      <span class="text-white md:group-hover:text-[var(--color-accent)] transition-colors text-[60px] md:text-[70px] font-display uppercase leading-none [font-variation-settings:'wdth'_75]">${event.title}</span>
+    </div>
+  </a>
+`;
+      } else {
+        // ── TOMT FELT ──
+        // Dette felt har intet event - vises som en tom boks med border
+        html += `<div class="w-full aspect-[181/298] border border-[var(--color-black)]"></div>`;
+      }
+    }
+    // Sætter den færdigbyggede HTML ind i gridet
+    gridEl.innerHTML = html;
+  }
+
+  // ─────────────────────────────────────────────
+  // FUNKTION: changeMonth
+  // Håndterer månedsskift med slide-animation på månedsskifteren
+  // og fade-animation på kalender gridet
+  // direction: 1 = frem (næste måned) / -1 = tilbage (forrige måned)
+  // ─────────────────────────────────────────────
+  function changeMonth(direction) {
+    const newIndex = currentIndex + direction;
+
+    // Stopper hvis vi forsøger at gå uden for maj eller oktober
+    if (newIndex < 0 || newIndex >= months.length) return;
+
+    // Bestemmer retning på animationen
+    const outAnimation = direction > 0 ? "slideOutToLeft" : "slideOutToRight";
+    const inAnimation = direction > 0 ? "slideInFromRight" : "slideInFromLeft";
+
+    // Animerer ALLE tre måneder ud samtidig
+    currentMonthEl.style.animation = `${outAnimation} 0.3s forwards`;
+    prevMonthEl.style.animation = `${outAnimation} 0.3s forwards`;
+    nextMonthEl.style.animation = `${outAnimation} 0.3s forwards`;
+
+    // Efter 300ms - når ud-animationen er færdig
+    setTimeout(() => {
+      // Opdaterer index og månedstekster med de nye værdier
+      currentIndex = newIndex;
+      updateMonthSwitcher();
+
+      // Nulstiller animationer på alle tre elementer
+      // så de er klar til at animere ind igen
+      currentMonthEl.style.animation = "none";
+      prevMonthEl.style.animation = "none";
+      nextMonthEl.style.animation = "none";
+
+      // Fader kalender gridet ud mens det opdateres med nye events
+      gridEl.style.opacity = "0";
+      setTimeout(() => {
+        // Bygger gridet op med events for den nye måned
+        updateGrid();
+        // Fader gridet ind igen med de nye events
+        gridEl.style.opacity = "1";
+      }, 300);
+    }, 300);
+  }
+
+  // ─────────────────────────────────────────────
+  // EVENT LISTENERS
+  // Lytter efter klik på forrige og næste måned
+  // og kalder changeMonth med den rigtige retning
+  // ─────────────────────────────────────────────
+  nextMonthEl.addEventListener("click", () => changeMonth(1));
+  prevMonthEl.addEventListener("click", () => changeMonth(-1));
+
+  // Vi starter med at vise maj
+  updateMonthSwitcher();
+  updateGrid();
+</script>
