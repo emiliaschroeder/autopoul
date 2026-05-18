@@ -10,10 +10,29 @@ import Button from "../components/Button.astro";
 
 <MainLayout title="Titel">
   <main>
+    <!-- Start side load animation -->
+    <div
+      id="loader"
+      class="fixed inset-0 bg-black flex flex-col items-center justify-center z-50"
+    >
+      <h1
+        class="text-white uppercase text-[130px] md:text-[300px] leading-none font-display flex"
+      >
+        <span>AUTO</span>
+        <span
+          id="poul-text"
+          class="inline-block w-[200px] md:w-[420px] leading-none text-center"
+          >POUL</span
+        >
+      </h1>
+      <img src="/img/singlechair.webp" class="w-19 mt-8" />
+    </div>
+    <!-- Slut side load animation-->
+
     <!-- Start sætning img sektion-->
     <!-- MOBIL VERSION -->
     <section
-      class="flex flex-col items-center gap-[var(--space-mob-md)] md:hidden uppercase w-fit mx-auto"
+      class="flex flex-col items-center gap-[var(--space-mob-md)] md:hidden uppercase w-fit mx-auto pb-[var(--space-mob-xxl)]"
     >
       <div class="flex items-center gap-7">
         <Heading style="h4">Autopoul is</Heading>
@@ -42,7 +61,7 @@ import Button from "../components/Button.astro";
 
     <!-- START DESK VERSION -->
     <section
-      class="hidden md:flex flex-col items-center gap-[var(--space-desk-md)] uppercase w-fit mx-auto"
+      class="hidden md:flex flex-col items-center gap-[var(--space-desk-md)] uppercase w-fit mx-auto md:pb-[var(--space-desk-xxl)]"
     >
       <!-- Række 1: -->
       <div class="flex items-center gap-7">
@@ -95,7 +114,7 @@ import Button from "../components/Button.astro";
 
     <!-- Start sektion video vin -->
     <section
-      class="grid grid-cols-1 md:grid-cols-2 mx-auto gap-[var(--space-mob-sm)] md:gap-[var(--space-desk-sm)] text-accent"
+      class="grid grid-cols-1 md:grid-cols-2 mx-auto gap-[var(--space-mob-sm)] md:gap-[var(--space-desk-sm)] text-accent pb-[var(--space-mob-xxl)] md:pb-[var(--space-desk-xxl)]"
     >
       <!-- Øverste/venstre billede med tekst -->
       <div class="relative">
@@ -136,3 +155,32 @@ import Button from "../components/Button.astro";
     <!-- Slut sektion video vin -->
   </main>
 </MainLayout>
+
+<script>
+  const fonts = [
+    { family: "var(--font-display)", spacing: "normal" },
+    { family: "var(--font-script)", spacing: "-0.08em" },
+    { family: "var(--font-script-variation)", spacing: "-0.08em" },
+  ];
+
+  const poul = document.getElementById("poul-text");
+  const loader = document.getElementById("loader");
+  let i = 0;
+
+  document.fonts.ready.then(() => {
+    const interval = setInterval(() => {
+      poul.style.fontFamily = fonts[i % fonts.length].family;
+      poul.style.letterSpacing = fonts[i % fonts.length].spacing;
+      i++;
+    }, 300);
+
+    setTimeout(() => {
+      clearInterval(interval);
+      if (loader) {
+        loader.style.transition = "opacity 0.5s";
+        loader.style.opacity = "0";
+        setTimeout(() => loader.remove(), 500);
+      }
+    }, 3000);
+  });
+</script>
