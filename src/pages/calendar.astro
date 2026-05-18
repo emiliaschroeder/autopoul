@@ -5,16 +5,37 @@ import CalendarView from "../components/CalendarView.astro";
 import "../styles/tailwind.css";
 ---
 
+<!-- 
+  ═══════════════════════════════════════════
+  CALENDAR SIDEN
+  Viser Autopouls event-kalender for sæsonen
+  maj-oktober med månedsskifter og kalender grid.
+  Data hentes fra src/data/events.js
+  ═══════════════════════════════════════════
+-->
 <MainLayout title="Calendar">
   <main>
+    <!-- START: Side-overskrift -->
     <Heading
       style="h1"
       stylingclasses="leading-none mb-[var(--space-mob-sm)] mt-[var(--space-mob-lg)] md:mt-[var(--space-desk-xl)] md:mb-[var(--space-desk-sm)]"
       >Calendar</Heading
     >
+    <!-- SLUT: Side-overskrift -->
+
+    <!-- START: Vandret skillelinje
+      Går kant til kant på tværs af hele siden
+      -mx trækker linjen ud forbi container-paddingen i MainLayout -->
     <hr class="border-[var(--color-black)] -mx-[25px] md:-mx-[40px]" />
+    <!-- SLUT: Vandret skillelinje -->
+
+    <!-- START: Kalender wrapper
+     spacing mellem kalender og footer -->
     <div class="mb-[var(--space-mob-xxl)] md:mb-[var(--space-desk-xxl)]">
+      <!-- START: CalendarView komponent -->
       <CalendarView />
+      <!-- SLUT: CalendarView komponent -->
     </div>
+    <!-- SLUT: Kalender wrapper -->
   </main>
 </MainLayout>
