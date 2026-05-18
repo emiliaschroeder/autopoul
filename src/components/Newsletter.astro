@@ -7,14 +7,14 @@ import Button from "./Button.astro";
 <section
   class="grid grid-cols-6 md:grid-cols-12
     mb-[var(--space-mob-xxl)]
-    md:mb-[var(--space-desk-xl)]"
+    md:mb-[var(--space-desk-xl)] py-[var(--space-mob-xxl)]"
 >
   <!-- NEWSLETTER + billeder her:-->
   <!-- Mobil: fylder hele bredden - Desktop: fylder 7 kolonner -->
-  <div class="col-span-6 md:col-span-7 relative">
+  <div class="col-span-6 md:col-span-8 relative">
     <!-- Billeder start -->
     <div
-      class="grid grid-cols-5 md:grid-cols-2 md:h-full gap-y-[var(--space-mob-xs)] md:gap-y-0"
+      class="grid grid-cols-5 md:grid-cols-2 md:h-full gap-y-[var(--space-mob-xs)] md:gap-x-[var(--space-desk-sm)]"
     >
       <!-- Enkelt stol -->
       <img
@@ -31,13 +31,15 @@ import Button from "./Button.astro";
         alt="Stabelstole"
         class="col-span-4
           md:col-span-1
-          w-full object-cover"
+          w-full md:w-3/4 object-cover md:self-end"
       />
     </div>
     <!-- Billeder slut -->
 
     <!-- NEWSLETTER tekst overlapper billederne -->
-    <div class="text-accent absolute top-0 left-[-20px] z-10 leading-none">
+    <div
+      class="text-accent absolute top-0 md:top-21 left-[-20px] z-10 md:left-[-87px] leading-none"
+    >
       <Heading style="h1">NEWSLETTER</Heading>
     </div>
   </div>
@@ -45,7 +47,7 @@ import Button from "./Button.astro";
   <!-- Tekst og formular start-->
   <div
     class="col-span-6
-      md:col-span-4
+      md:col-span-5
       md:col-start-9
       flex flex-col justify-between
       pt-[var(--space-mob-sm)]
